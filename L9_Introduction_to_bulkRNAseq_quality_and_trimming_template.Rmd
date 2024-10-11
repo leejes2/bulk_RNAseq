@@ -151,6 +151,7 @@ system(command = "multiqc /home/prendeje/bulk_RNAseq/STEP0_fastqc_results --file
 ```{r, eval=TRUE, echo = TRUE, include = TRUE, message = TRUE}
 # OPTION 1 - in R
 # TO DO
+system(command = "cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -q 20 --minimum-length=10 --pair-filter=any -o /home/bulk_RNAseq/STEP1_trimmed_fastqc/30_min_N4_peptide_rep1_1_trimmed.fastq.gz -p /home/bulk_RNAseq/STEP1_trimmed_fastqc/30_min_N4_peptide_rep1_2_trimmed.fastq.gz /home/prendeje/data/bulk_RNA_seq/fastq_files/raw/30_min_N4_peptide_rep1_1.fastq.gz /home/prendeje/data/bulk_RNA_seq/fastq_files/raw/30_min_N4_peptide_rep1_2.fastq.gz")
 
 ```
 
