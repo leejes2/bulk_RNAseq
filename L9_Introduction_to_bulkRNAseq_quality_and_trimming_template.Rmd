@@ -110,10 +110,12 @@ Right now, you are running all of the fastq files in the directory I gave you. L
 ```{r, eval=TRUE, echo = TRUE, include = TRUE, message = TRUE}
 # OPTION 1 - in R
 # TO DO
-fastqcr::fastqc(fq.dir = "~/data/bulk_RNA_seq/fastq_files/raw",
-                qc.dir = "~/bulk_RNAseq/STEP0_fastqc_results",
-                threads = 1,
-                fastqc.path = "~/software/FastQC/fastqc")
+#fastqcr::fastqc(fq.dir = "~/data/bulk_RNA_seq/fastq_files/raw",
+                #qc.dir = "~/bulk_RNAseq/STEP0_fastqc_results",
+                #threads = 1,
+                #fastqc.path = "~/software/FastQC/fastqc")
+
+system(command = "multiqc /home/prendeje/bulk_RNAseq/STEP0_fastqc_results --filename SPET0_initial_fastqc.html --outdir /home/prendeje/bulk_RNAseq/STEP0_fastqc_results/")
 ```
 
 **OR**  
