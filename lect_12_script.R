@@ -36,3 +36,19 @@ all(rownames(myMetaData) == colnames(geneCounts))
 all(rownames(myMetaData) %in% colnames(geneCounts))
 all(colnames(geneCounts) %in% rownames(myMetaData))
 
+
+
+
+#Step5a: geneCount stats
+summary(geneCounts)
+dim(geneCounts)
+
+
+#STEP5b: filtering raw gene counts on low/no expressed gene
+keep <- rowSums(geneCounts) >= 15
+filteredGeneCounts <- geneCounts[keep, ]
+
+
+#do it with tidyvers
+#geneCounts %>% mutate(sumOfRead = rowSums()) %>% filter(sumofRead>=15)
+
