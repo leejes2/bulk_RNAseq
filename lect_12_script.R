@@ -62,7 +62,7 @@ deObj <- DESeqDataSetFromMatrix(countData = filteredGeneCounts,
 #STEP5c: normalize counts
 deObj <- DESeq(deObj)
 
-#view normalized counts
+#view normalized counts in a new dataframe
 normCountsDf <- counts(deObj, normalized = TRUE)
 deObj$sizeFactor
 
@@ -70,6 +70,9 @@ deObj$sizeFactor
 rawCountsDf <- counts(deObj, normalized = FALSE)
 
 
+
+#STEP5d: PCA 
+pcs <- prcomp(t(normCountsDf), scale. = TRUE)
 
 
 
