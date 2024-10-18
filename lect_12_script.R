@@ -2,6 +2,7 @@
 #lecture 12
 
 library(stringr)
+library(DESeq2)
 
 myMetaData <- read.csv(file = "~/bulk_RNAseq/bulk_RNAseq_data_qc_metrics.csv", header = T)
 
@@ -49,6 +50,31 @@ keep <- rowSums(geneCounts) >= 15
 filteredGeneCounts <- geneCounts[keep, ]
 
 
-#do it with tidyvers
+#do it with tidyverse, this is not finished
 #geneCounts %>% mutate(sumOfRead = rowSums()) %>% filter(sumofRead>=15)
+
+
+#Put the data into DESeq2 object
+deObj <- DESeqDataSetFromMatrix(countData = filteredGeneCounts, 
+                                colData = myMetaData, 
+                                design = ~biological_groups)
+
+#STEP5c: normalize counts
+deObj <- DESeq(deObj)
+
+#view normalized counts
+normCountsDf <- counts(deObj, normalized = TRUE)
+deObj$sizeFactor
+
+#you can always go back to your raw counts by setting the normalized parameter to FALSE
+rawCountsDf <- counts(deObj, normalized = FALSE)
+
+
+
+
+
+
+
+
+
 
