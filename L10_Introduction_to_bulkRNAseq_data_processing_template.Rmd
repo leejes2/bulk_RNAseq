@@ -1,0 +1,162 @@
+---
+title: "Lecture 10: Introduction to bulk-RNAseq DE Analysis: Data Processing"
+author: "Jessica Prendergast"
+date: "10/11/2024"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    css: "style.css"  
+---
+<br/>  
+
+  
+# 1. Objectives and Goals  
+***  
+
+The primary objective of this assignment is to illustrate that you understand the first steps of bulk-RNAseq data processing as it pertains to RNA sequences alignment and quantification.  By the end of this lecture and assignment you should be able to:
+
+- Define alignment/mapping and quantification as it pertains to bulk RNAseq experiments
+- ability to run `Rsubread` as both an aligner and quantifier for reads
+- identify and use metrics generated from `Rsubread` to determine quality of samples and alignment
+
+<br/>
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br/>
+<br/>
+  
+
+# 2. Install/Load packages  
+*** 
+
+This section is always required.  You will load all packages necessary for the scope of the assignment in between the code blocks.  
+
+Write code to load in the following R packages:  
+
+* Rsubread
+
+```{r, include =TRUE, echo=TRUE, message = FALSE}
+# TO DO
+library(Rsubread)
+```
+
+<br/>
+
+
+# 3. Bulk RNA-seq Alignment
+***
+
+**Purpose**:  To be able to use raw sequencing files (fastq) and use them to map reads to a reference genome.  
+
+<div style="background-color: #cfc ; padding: 10px; border: 1px solid green;"> 
+**Your Assigned Samples:**  
+* 30_min_N4_peptide_PRN-694_rep2  
+
+</div>  
+
+## **Critical Thinking Exercises**   {.tabset .tabset-fade .tabset-pills}  
+
+### Question 1  
+How is mapping/alignment different from quantification?  
+
+<br/>  
+
+### Question 2  
+Define what it means for a read to be a multi-mapper.  Why does this happen?  
+
+<br/>  
+
+### Question 3  
+What is the difference between an alignment algorithm built to handle DNA exclusively versus those that are built to handle RNA?  
+
+<br/>  
+
+### Question 4  
+What is the difference between a traditional aligner versus a pseudoaligner. When might you use one over the other?  
+
+<br/>  
+
+### Question 5  
+Let's say you want to use a different program and/or algorithm for aligning your raw sequences reads. Name at least 2 different softwares that accomplish the same task as the alignment portion of Rsubread (note, they do not have the be the ones listed in the lecture).  
+
+<br/>  
+
+### Question 6  
+Take a look at the summary statistics generated on your sample alignment.   What **percentage** of reads were mapped?  What **percentage** of reads were uniquely mapped? Multi-mapped? Unmapped? (Careful! I want all these in percentages, not counts!)  How long did it take to run the alignment?  Comment on how you would interpret the quality of the the alignment based on the metrics listed previously and some of the other metrics generated from the output.  
+
+<br/>  
+
+
+### Question 7  
+In your counts matrix, look at the gene Srsf7.  Based on the raw counts, it looks like some of the biological replicates are expressed twice as high as their replicate phenotypic counterparts.  On the other hand, if we compare the counts between groups, it looks like the 30 minute N4 peptide samples with the PRN-694 inhibitor express Srsf6 twice as high as 0 minute unstimulated replicates.  At this point, can I make the claim that Srsf7 is overexpressed in the 30 minute N4 peptide samples with the added PRN-694 inhibitor relative to the 0 minute unstimulated cohort of samples?  Defend your answer.  
+
+<br/>
+
+### Question 8  
+How many "chromosomes" are listed in the `mm10.fa` file in the Rstudio/Linux server we use in class?  Which Linux command(s) did you use to arrive to that answer.  Hint:  Looking up how many chromosome are in mm10 in google, won't get you the correct answer :)  
+
+<br/>  
+
+
+
+## 3.1 Sequence Alignment  
+
+1. Write and execute code to align your assigned samples.
+
+```{r, eval=TRUE, echo = TRUE, include = TRUE, message = TRUE}
+# TO DO
+align(index = "~/data/bulk_RNA_seq/reference_data/gapped_rsubread_index/mm10_rsubread_index", 
+      readfile1 = "~/data/bulk_RNA_seq/fastq_files/trimmed/30_min_N4_peptide_PRN-694_rep2_1_trimmed.fastq.gz", 
+      readfile2 = "~/data/bulk_RNA_seq/fastq_files/trimmed/30_min_N4_peptide_PRN-694_rep2_2_trimmed.fastq.gz", 
+      output_file = "~/bulk_RNAseq/STEP3_alignments/30_min_N4_peptide_PRN-694_rep2_sorted.bam",
+      sortReadsByCoordinates = TRUE, 
+      type = "rna", 
+      useAnnotation = TRUE, 
+      annot.ext = "~/data/bulk_RNA_seq/reference_data/mm10.refGene.gtf", 
+      isGTF = TRUE, 
+      GTF.featureType = "exon", 
+      GTF.attrType = "gene_id")
+
+```
+<br/>  
+
+## 3.2 Read quantification  
+
+2. Write your code here for quantifying the reads from all 12 sample alignments to genes. Hint:it will help you a LOT if you keep the order of the bam list the same as the order of the metadata file!!
+```{r, eval=TRUE, echo = TRUE, include = TRUE, message = TRUE}
+# TO DO
+library(Rsubread)
+myCounts <- Rsubread::featureCounts(files = list.files(path = "~/data/bulk_RNA_seq/bam_files/", pattern = "bam$", full.names = TRUE), 
+                        annot.ext = "~/data/bulk_RNA_seq/reference_data/mm10.refGene.gtf", 
+                        isGTFAnnotationFile = TRUE, 
+                        GTF.featureType = "exon", 
+                        countMultiMappingReads = TRUE, 
+                        strandSpecific = 0,
+                        isPairedEnd = TRUE)
+```
+<br/>  
+
+3. Write a single line of code to save the counts data object as an R object for later use.  
+```{r, eval=TRUE, echo = TRUE, include = TRUE, message = TRUE}
+# TO DO
+save(myCounts, file = "~/bulk_RNAseq/myCounts.rdat")
+
+#load("~/bulk_RNAseq/myCounts.rdat")
+```
+<br/> 
+
+
+
+# 4. Session info  
+*** 
+
+Finally, we will __always__ end our Rmarkdown documents with the session information.  This provides version control so if there is any issue with your code or results, we can trace it back to the session information and try running it on the same system.  You just need to always include this section, although no changes will ever need to be made here.
+
+```{r, echo=TRUE}
+# session info
+sessionInfo()
+```
